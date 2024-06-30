@@ -10,10 +10,40 @@ import cors from 'cors';
 import dotenv from "dotenv";
 import{connectDB} from "./db/connectDB.js"
 
-
-dotenv.config(); // cannot use environment variables
+import passport from "passport";
+import session from "express-session";
+import connectMongo from "connect-mongodb-session";
+import {buildContext} from "graphql-passport";
+import {configurePassport} from './passport/passport.config.js'
 const app = express();
 const httpServer = http.createServer(app);
+dotenv.config(); // if we don't have cannot use environment variables
+const MongoDBStore = connectMongo(session)
+configurePassport();
+const store = new MongoDBStore({
+    uri:process.env.MONGO_URI,
+    collection: "sessions",
+})
+
+store.on("error", (err) => {
+    console.log(err);
+})
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false, // this option specifies whether to save the session to the store on every request, if we say true, then we would have multiple sessions for the same user
+        saveUninitialized: false, // option specifies whether to save unitialized sessions
+        cookie:{
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+            httpOnly: true, // this option prevents the Cross - Site scripting (XSS) attacks
+        },
+        store: store
+    }
+)
+)
+app.use(passport.initialize());
+app.use(passport.session());
+
 const server = new ApolloServer({
     typeDefs: mergeTypeDefs,
     resolvers: mergeResolvers,
@@ -24,12 +54,15 @@ const server = new ApolloServer({
 await server.start();
 app.use(
     '/',
-    cors(),
+    cors({
+        origin: "http://localhost:3000",
+        credientials: true,
+    }),
     express.json(),
     // expressMiddleware accepts the same arguments:
     // an Apollo Server instance and optional configuration options
     expressMiddleware(server, {
-      context: async ({ req }) => ({req}),
+      context: async ({ req, res }) => buildContext({req,res}), // obkect thats saved across all the resolvers
     }),
   );
   
