@@ -8,7 +8,6 @@ const userTypeDef = `#graphql
     gender: String!
   }
   type Query {
-    users: [User!]
     authUser: User
     user(userId:ID!): User # fetch a single user with their ID, as response, we sent the user
   }
