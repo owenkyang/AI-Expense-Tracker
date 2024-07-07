@@ -5,8 +5,8 @@ const userResolver = {
     Mutation:{
         signUp: async(_, {input}, context)=>{
             try{
-                const {username, name, password, gender} = input;
-                if (!username || !name || !password || !gender){
+                const {username, name, password} = input;
+                if (!username || !name || !password){
                     throw new Error("All Fields are required");
                 }
                 const existingUser = await User.findOne({username});
@@ -15,15 +15,13 @@ const userResolver = {
                 }
                 const salt = await bcrypt.genSalt(10) // how long the hash of the password is
                 const hashedPassword = await bcrypt.hash(password, salt); // converted to something not readable
-                const boyProfilePic = `https://avater.iran.liara.run/public/boy?username=${username}`;
-                const girlProfilePic = `https://avater.iran.liara.run/public/girl?username=${username}`;
+                const ProfilePic = `https://avater.iran.liara.run/public/username=${username}`;
 
                 const newUser = new User({
                     username,
                     name,
                     password: hashedPassword,
-                    gender,
-                    profilePicture: gender === "male" ? boyProfilePic: girlProfilePic,
+                    profilePicture: ProfilePic
                 })
 
                 await newUser.save();

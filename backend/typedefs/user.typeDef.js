@@ -5,7 +5,6 @@ const userTypeDef = `#graphql
     name: String!
     password: String!
     profilePicture: String # can be null value, not required, ! means required
-    gender: String!
   }
   type Query {
     authUser: User
@@ -20,7 +19,6 @@ const userTypeDef = `#graphql
     username: String!
     name: String!
     password: String!
-    gender: String!
   }
   input LoginInput {
     username: String!
