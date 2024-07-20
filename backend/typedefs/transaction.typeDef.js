@@ -12,7 +12,7 @@ const transactionTypeDef = `#graphql
     
     type Query{
         transactions: [Transaction!]
-        transcation(transactionId:ID!): Transaction # sends only 1 transaction back
+        transaction(transactionId:ID!): Transaction # sends only 1 transaction back
     
     }
     type Mutation{

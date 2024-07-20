@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema({ // schema defines the structure of the data
     userId: {
-        type: mongoose.SchemaType.Types.ObjectId, // transaction will have a userId field that will be referencing to the User model
+        type: mongoose.Schema.Types.ObjectId, // transaction will have a userId field that will be referencing to the User model
         ref: "User",
         required: true
     },

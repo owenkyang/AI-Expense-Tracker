@@ -1,4 +1,4 @@
-import Transaction from "../models/transaction.model";
+import Transaction from "../models/transaction.model.js";
 
 const transactionResolver = {
     Query: {
@@ -43,7 +43,7 @@ const transactionResolver = {
                 throw new Error("Error creating transaction");
             }
         },
-        updateTransaction: async(_, {input},_) =>{
+        updateTransaction: async(_, {input}) =>{
             try{
                 // new returns the updated document to the database
                 const updatedTransaction = await Transaction.findByIdAndUpdate(input.transactionId, input, {new:true})
@@ -54,7 +54,7 @@ const transactionResolver = {
                 throw new Error("Error updating transaction");
             }
         },
-        deleteTransaction: async(_, {transactionId}, _) =>{
+        deleteTransaction: async(_, {transactionId}) =>{
             try{
                 const deleteTransaction = await Transaction.findByIdAndDelete(transactionId);
                 return deleteTransaction;

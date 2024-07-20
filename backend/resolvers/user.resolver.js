@@ -1,6 +1,6 @@
 import { users } from '../dummyData/data.js';
 import User from '../models/user.model.js';
-import bcrypt from 'bycryptjs';
+import bcrypt from "bcryptjs";
 const userResolver = {
     Mutation:{
         signUp: async(_, {input}, context)=>{
@@ -15,7 +15,7 @@ const userResolver = {
                 }
                 const salt = await bcrypt.genSalt(10) // how long the hash of the password is
                 const hashedPassword = await bcrypt.hash(password, salt); // converted to something not readable
-                const ProfilePic = `https://avater.iran.liara.run/public/username=${username}`;
+                const ProfilePic = `https://avatar.iran.liara.run/username?username=${username}`;
 
                 const newUser = new User({
                     username,
@@ -35,13 +35,14 @@ const userResolver = {
         login: async(_, {input}, context) => {
             try{
                 const {username,password} = input;
-                const {user} = await context.authenticate("graphql-local", {username, password})
+                if (!username || !password) throw new Error("All fields are required");
+                const {user} = await context.authenticate("graphql-local", {username, password});
                 await context.login(user);
-                return user
+                return user;
             }
             catch(err){
                 console.error("Error in login:", err);
-                throw new Error(error.message || "Internal server error");
+                throw new Error(err.message || "Internal server error");
             }
         },
         logout: async(_,__,context) =>{
@@ -55,7 +56,7 @@ const userResolver = {
             }
             catch(err){
                 console.error("Error in logout:", err);
-                throw new Error(error.message || "Internal server error");
+                throw new Error(err.message || "Internal server error");
             }
         }
     },
@@ -70,7 +71,7 @@ const userResolver = {
                 throw new Error("Internal server error");
             }
         },
-        user: async (_, {userid}) => {
+        user: async (_, {userId}) => {
             try{
                 const user = await User.findById(userId);
                 return user
