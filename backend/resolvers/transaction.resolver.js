@@ -8,7 +8,7 @@ const transactionResolver = {
                     throw new Error ("Unauthorized");
                 }
                 const userId = await context.getUser()._id;
-                const transactions = await Transaction.find({user: userId});
+                const transactions = await Transaction.find({userId});
                 return transactions;
             }
         catch(error){

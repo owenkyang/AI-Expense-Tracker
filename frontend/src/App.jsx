@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { GET_AUTHENTICATED_USER } from "./graphql/queries/user.query";
 import { Toaster } from "react-hot-toast";
 // TODO: add AI financial adviser, way to add credit cards
+// TODO: add a spreadsheet reader, automatically adds transactions/expenses
 function App() {
   const {loading, data, error} = useQuery(GET_AUTHENTICATED_USER);
   console.log("Loading:", loading)
