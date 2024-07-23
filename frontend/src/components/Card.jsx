@@ -25,6 +25,7 @@ const Card = ({ transaction }) => {
 	})
 	description = description[0]?.toUpperCase() + description.slice(1)
 	category = category[0]?.toUpperCase() + category.slice(1);
+	paymentType = paymentType[0]?.toUpperCase() + paymentType.slice(1)
 	const formattedDate = formatDate(date);
 	const handleDelete = async () =>{
 		try{

@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 // TODO: add clearer return button, for example when we go to update transaction, hard to figure out how to return to home page
 // 3:21:00 explains how requests get cached, for example, once we open up the home page and go to another page and return back to home page, we do not make a request again
 // makes it super fast
+// Document how GraphQL works, especially the apollo graphql part (from GPT)
 function App() {
   const {loading, data, error} = useQuery(GET_AUTHENTICATED_USER);
   console.log("Loading:", loading)
