@@ -94,8 +94,8 @@ const transactionResolver = {
         user: async(parent) => {
             const userId = parent.userId // parent is the transaction
             try{
-                const user = await User.findById(userId)
-                return user
+                const user = await User.findById(userId);
+                return user;
             }catch(error){
                 console.error("Error getting user:", err);
                 throw new Error("Error getting user")
