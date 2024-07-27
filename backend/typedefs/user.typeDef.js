@@ -5,6 +5,7 @@ const userTypeDef = `#graphql
     name: String!
     password: String!
     profilePicture: String # can be null value, not required, ! means required
+    transactions: [Transaction!]
   }
   type Query {
     authUser: User

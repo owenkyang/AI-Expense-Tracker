@@ -23,6 +23,23 @@ export const GET_TRANSACTION = gql`
             amount
             location
             date
+            user {
+                name
+                username
+                profilePicture
+            }
         }
     }
 `
+export const GET_TRANSACTION_STATISTICS = gql`
+    query GetTransactionStatistics{
+        categoryStatistics{
+            category
+            totalAmount
+        }
+    }
+`
+// to do get specific transaction statistics for AI
+// has name of transaction rather than category
+// feed into a POST request to an API
+// API feeds into 
