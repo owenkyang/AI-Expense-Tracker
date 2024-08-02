@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import TransactionPage from "./pages/TransactionPage";
+import Chatbot from "./pages/ChatBotPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Header from "./components/ui/header";
 import { useQuery } from "@apollo/client";
@@ -30,6 +31,7 @@ function App() {
         <Route path="/login" element ={!data.authUser ? <LoginPage />:<Navigate to = "/"/> }/>
         <Route path="/signup" element ={!data.authUser ? <SignUpPage />:<Navigate to = "/"/>}/>
         <Route path="/transaction/:id" element ={data.authUser ?<TransactionPage /> : <Navigate to="/login"/>}/>
+        <Route path = "/chatbot" element = {data.authUser ? <Chatbot /> : <Navigate to = "/login"/>}/>
         <Route path="*" element ={<NotFoundPage />}/>
       </Routes>
       <Toaster/>

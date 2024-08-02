@@ -39,6 +39,14 @@ export const GET_TRANSACTION_STATISTICS = gql`
         }
     }
 `
+export const GET_TRANSACTION_DESCRIPTIONS = gql`
+    query GetTransactionDescriptions{
+        nameStatistics{
+            description
+            totalAmount
+        }
+    }
+`
 // to do get specific transaction statistics for AI
 // has name of transaction rather than category
 // feed into a POST request to an API

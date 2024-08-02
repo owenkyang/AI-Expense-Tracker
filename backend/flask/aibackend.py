@@ -1,23 +1,63 @@
-from flask import Flask, request, jsonify, Blueprint
-from openai import OpenAI
+from flask import Flask, request, jsonify
+import requests
 import os
 
-main = Blueprint('main', __name__)
-openai.api_key = os.getenv("OPENAI_KEY")
+app = Flask(__name__)
 
-@main.route('/get_advice', methods=['POST'])
-def get_advice():
-    data = request.json
-    transactions = data['transactions']
-    
-    prompt = f"Based on these transactions, provide financial advice: {transactions}"
-    
-    # Call the OpenAI API
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=150
-    )
-    
-    advice = response.choices[0].text.strip()
-    return jsonify({'advice': advice})
+# GraphQL endpoint URL of your Node.js backend
+GRAPHQL_URL = "https://ai-expense-tracker.onrender.com/graphql"
+
+# Create a session object
+session = requests.Session()
+
+@app.route('/user_transactions/<user_id>', methods=['GET'])
+def get_user_transactions(user_id):
+    try:
+        # Define the GraphQL query
+        query = """
+        query GetUserTransactions($userId: ID!) {
+          user(userId: $userId) {
+            _id
+            username
+            transactions {
+              _id
+              amount
+              date
+              description
+              category
+            }
+          }
+        }
+        """
+
+        # Variables for the query
+        variables = {
+            "userId": user_id
+        }
+
+        # Make a POST request to the GraphQL server with session cookies
+        response = session.post(
+            GRAPHQL_URL,
+            json={"query": query, "variables": variables},
+            headers={"Content-Type": "application/json"}
+        )
+
+        # Check for errors
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to fetch transactions"}), response.status_code
+
+        # Parse the response
+        data = response.json()
+        if "errors" in data:
+            return jsonify({"error": data["errors"]}), 400
+
+        # Return the transactions
+        transactions = data["data"]["user"]["transactions"]
+        return jsonify({"transactions": transactions})
+
+    except Exception as e:
+        print("Error fetching user transactions:", str(e))
+        return jsonify({"error": "Internal server error"}), 500
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)

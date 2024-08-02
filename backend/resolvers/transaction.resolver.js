@@ -51,7 +51,7 @@ const transactionResolver = {
             return Object.entries(categoryMap).map(([category, totalAmount]) => ({category, totalAmount}));
             // return [{category: "expense", totalAmount: 125}, ... etc]
         },
-
+        
     
     },
     Mutation: {
