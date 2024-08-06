@@ -9,6 +9,7 @@ import Header from "./components/ui/header";
 import { useQuery } from "@apollo/client";
 import { GET_AUTHENTICATED_USER } from "./graphql/queries/user.query";
 import { Toaster } from "react-hot-toast";
+import GridBackground from "./components/ui/GridBackground";
 // TODO: add AI financial adviser, way to add credit cards
 // TODO: add a spreadsheet reader, automatically adds transactions/expenses
 // TODO: add clearer return button, for example when we go to update transaction, hard to figure out how to return to home page
@@ -27,10 +28,10 @@ function App() {
     <>
       {data?.authUser && <Header/>}
       <Routes>
-        <Route path="/" element ={data.authUser ? <HomePage /> : <Navigate to="/login"/>} />
-        <Route path="/login" element ={!data.authUser ? <LoginPage />:<Navigate to = "/"/> }/>
-        <Route path="/signup" element ={!data.authUser ? <SignUpPage />:<Navigate to = "/"/>}/>
-        <Route path="/transaction/:id" element ={data.authUser ?<TransactionPage /> : <Navigate to="/login"/>}/>
+        <Route path="/" element ={data.authUser ? <GridBackground><HomePage /></GridBackground> : <Navigate to="/login"/>} />
+        <Route path="/login" element ={!data.authUser ? <GridBackground><LoginPage /></GridBackground>:<Navigate to = "/"/> }/>
+        <Route path="/signup" element ={!data.authUser ? <GridBackground><SignUpPage /></GridBackground>:<Navigate to = "/"/>}/>
+        <Route path="/transaction/:id" element ={data.authUser ?<GridBackground><TransactionPage /></GridBackground> : <Navigate to="/login"/>}/>
         <Route path = "/chatbot" element = {data.authUser ? <Chatbot /> : <Navigate to = "/login"/>}/>
         <Route path="*" element ={<NotFoundPage />}/>
       </Routes>

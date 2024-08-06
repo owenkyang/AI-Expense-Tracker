@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.subtle-shadow {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+* {
+    box-shadow: none !important;
+  }

@@ -4,7 +4,7 @@ const transactionSchema = new mongoose.Schema({ // schema defines the structure 
     userId: {
         type: mongoose.Schema.Types.ObjectId, // transaction will have a userId field that will be referencing to the User model
         ref: "User",
-        required: true
+        required: true,
     },
     description:{
         type: String,

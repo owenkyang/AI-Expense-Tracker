@@ -10,7 +10,7 @@ const Cards = () => {
 	const {data:userAndTransactions} = useQuery(GET_USER_AND_TRANSACTIONS, {
 		variables: {
 			userId: authUser?.authUser?._id,
-		}
+		},
 	})
 	console.log("userAndTransactions:", userAndTransactions)
 	console.log("Cards:", data);

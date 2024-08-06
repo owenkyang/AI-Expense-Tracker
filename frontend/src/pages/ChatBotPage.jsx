@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const Chatbot = () => {
   const [messages, setMessages] = useState([
     { sender: 'bot', text: 'Hello! How can I assist you with your finances today?' },
@@ -18,7 +19,7 @@ const Chatbot = () => {
 
     // Send user's message to the backend API and get the response
     try {
-      const response = await fetch('https://your-flask-backend-url.com/get_advice', {
+      const response = await fetch('http://127.0.0.1:5000/get_advice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,15 +41,15 @@ const Chatbot = () => {
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`my-2 p-2 rounded-lg ${
+            className={`my-2 p-2 rounded-lg max-w-xs${
               msg.sender === 'bot' ? 'bg-blue-200 self-start' : 'bg-green-200 self-end'
             }`}
           >
-            {msg.text}
+            <p className='text-black'>{msg.text}</p>
           </div>
         ))}
       </div>
-      <div className="flex p-4 bg-white shadow-md">
+      <div className="flex p-4 bg-white">
         <input
           type="text"
           value={input}
@@ -58,7 +59,7 @@ const Chatbot = () => {
         />
         <button
           onClick={handleSendMessage}
-          className="ml-4 p-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
+          className="ml-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
         >
           Send
         </button>
