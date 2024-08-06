@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_AUTHENTICATED_USER } from '../graphql/queries/user.query';
 
 
 const Chatbot = () => {
@@ -6,7 +8,7 @@ const Chatbot = () => {
     { sender: 'bot', text: 'Hello! How can I assist you with your finances today?' },
   ]);
   const [input, setInput] = useState('');
-
+  const{data:authUser} = useQuery(GET_AUTHENTICATED_USER)
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
@@ -19,16 +21,16 @@ const Chatbot = () => {
 
     // Send user's message to the backend API and get the response
     try {
-      const response = await fetch('http://127.0.0.1:5000/get_advice', {
+      const response = await fetch('http://127.0.0.1:5000/financial_advice', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ prompt: input, user_id: authUser?.authUser?._id }),
       });
 
       const data = await response.json();
-      setMessages([...newMessages, { sender: 'bot', text: data.advice }]);
+      setMessages([...newMessages, { sender: 'bot', text: data.response }]);
     } catch (error) {
       console.error('Error fetching response:', error);
       setMessages([...newMessages, { sender: 'bot', text: 'Sorry, something went wrong. Please try again.' }]);

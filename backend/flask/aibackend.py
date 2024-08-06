@@ -2,15 +2,16 @@ from flask import Flask, request, jsonify
 import requests
 from openai import OpenAI
 import os
-
+from dotenv import load_dotenv
+from flask_cors import CORS
 app = Flask(__name__)
-
+CORS(app)
 # GraphQL endpoint URL of your Node.js backend
 GRAPHQL_URL = "https://ai-expense-tracker.onrender.com/graphql"
-
+load_dotenv()
 # Create a session object
 session = requests.Session()
-client = OpenAI()
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # @app.route('/user_transactions', methods=['GET'])
 # def get_user_transactions(user_id):
