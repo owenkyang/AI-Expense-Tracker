@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 import requests
 from openai import OpenAI
 import os
@@ -6,12 +6,15 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
+session = requests.Session()
+
 # GraphQL endpoint URL of your Node.js backend
 GRAPHQL_URL = "https://ai-expense-tracker.onrender.com/graphql"
 load_dotenv()
+app.secret_key = os.urandom(24)
 # Create a session object
-session = requests.Session()
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+history = {}
 
 # @app.route('/user_transactions', methods=['GET'])
 # def get_user_transactions(user_id):
@@ -61,14 +64,19 @@ client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 #     except Exception as e:
 #         print("Error fetching user transactions:", str(e))
 #         return jsonify({"error": "Internal server error"}), 500
-    
+
+@app.before_request
+def init_chat():
+    history['messages'] = []
+
 @app.route('/financial_advice', methods=['POST'])
 def chat_with_gpt():
     try:
-        # Get the request data
         data = request.json
         user_id = data.get('user_id')
         user_prompt = data.get('prompt')
+        if not user_prompt:
+            return jsonify({"error": "Promopt is required"}), 400
 
         # Fetch user transactions
         query = """
@@ -103,31 +111,34 @@ def chat_with_gpt():
 
         transactions = data["data"]["user"]["transactions"]
 
-        # Prepare the prompt for the ChatGPT model
         transactions_text = "\n".join([
             f"- {t['date']}: {t['description']} ({t['category']}) - ${t['amount']}" for t in transactions
         ])
         prompt = f"User's Transactions:\n{transactions_text}\n\nUser's Question: {user_prompt}"
-
+        history['messages'].append({"role": "user", "content": prompt})
         # Call the OpenAI API
         completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # You can use other models like "gpt-3.5-turbo" if available
-            messages=prompt,
+            model="gpt-3.5-turbo",  
+            messages=history['messages'],
             max_tokens=150,
             temperature=0.7,
-            stream=True
         )
 
         # Get the AI response
         ai_response = completion.choices[0].message.content
+        history['messages'].append({"role": "assistant", "content": ai_response})
 
-        # Return the response
+        print(jsonify({"response": ai_response}))
         return jsonify({"response": ai_response})
 
     except Exception as e:
         print("Error in chat_with_gpt:", str(e))
         return jsonify({"error": "Internal server error"}), 500
-
+    
+@app.route('/clear_session', methods=['POST'])
+def clear_session():
+    history['messages'] = []
+    return jsonify({"message": "Session cleared and conversation reset."})
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
