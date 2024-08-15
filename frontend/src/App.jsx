@@ -10,6 +10,7 @@ import { useQuery } from "@apollo/client";
 import { GET_AUTHENTICATED_USER } from "./graphql/queries/user.query";
 import { Toaster } from "react-hot-toast";
 import GridBackground from "./components/ui/GridBackground";
+import { useNavigate, Link } from "react-router-dom";
 // TODO: add AI financial adviser, way to add credit cards
 // TODO: add a spreadsheet reader, automatically adds transactions/expenses
 // TODO: add clearer return button, for example when we go to update transaction, hard to figure out how to return to home page
@@ -23,7 +24,7 @@ function App() {
   console.log("Error:", error)
   
   if (loading) return null;
-
+  
   return (
     <>
       {data?.authUser && <Header/>}
@@ -36,7 +37,11 @@ function App() {
         <Route path="*" element ={<NotFoundPage />}/>
       </Routes>
       <Toaster/>
-  
+      <Link to = "/chatbot">
+      <button className="fixed bottom-5 left-5 bg-blue-500 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-600">
+        Chat to Assistant
+      </button>
+      </Link>
     </>
   );
 }
