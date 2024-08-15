@@ -12,14 +12,11 @@ const Chatbot = () => {
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
-    // Add user's message to the chat
     const newMessages = [...messages, { sender: 'user', text: input }];
     setMessages(newMessages);
 
-    // Clear the input field
     setInput('');
 
-    // Send user's message to the backend API and get the response
     try {
       const response = await fetch('http://127.0.0.1:5000/financial_advice', {
         method: 'POST',
@@ -36,10 +33,16 @@ const Chatbot = () => {
       setMessages([...newMessages, { sender: 'bot', text: 'Sorry, something went wrong. Please try again.' }]);
     }
   };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <div className="flex-1 overflow-y-auto p-4">
+    
+      <div className="flex flex-col h-[770px] w-[1000px] mx-auto bg-white shadow-lg rounded-xl">
+      <div className="flex-1 overflow-y-auto p-2">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -51,13 +54,14 @@ const Chatbot = () => {
           </div>
         ))}
       </div>
-      <div className="flex p-4 bg-white">
+      <div className="flex p-4 bg-black">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Type your message..."
-          className="flex-1 p-2 border border-gray-300 rounded-lg"
+          className="flex-1 p-2 border border-gray-300 text-black rounded-lg"
         />
         <button
           onClick={handleSendMessage}
@@ -67,6 +71,7 @@ const Chatbot = () => {
         </button>
       </div>
     </div>
+
   );
 };
 

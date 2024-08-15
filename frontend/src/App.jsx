@@ -10,7 +10,10 @@ import { useQuery } from "@apollo/client";
 import { GET_AUTHENTICATED_USER } from "./graphql/queries/user.query";
 import { Toaster } from "react-hot-toast";
 import GridBackground from "./components/ui/GridBackground";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 // TODO: add AI financial adviser, way to add credit cards
 // TODO: add a spreadsheet reader, automatically adds transactions/expenses
 // TODO: add clearer return button, for example when we go to update transaction, hard to figure out how to return to home page
@@ -22,6 +25,12 @@ function App() {
   console.log("Loading:", loading)
   console.log("Authenticated user:", data)
   console.log("Error:", error)
+  const location = useLocation();
+  const [showButton, setShowButton] = useState(true);
+
+  useEffect(() => {
+    setShowButton(location.pathname !== '/chatbot' && location.pathname !== '/login' && location.pathname !== '/signup');
+  }, [location.pathname]);
   
   if (loading) return null;
   
@@ -33,15 +42,18 @@ function App() {
         <Route path="/login" element ={!data.authUser ? <GridBackground><LoginPage /></GridBackground>:<Navigate to = "/"/> }/>
         <Route path="/signup" element ={!data.authUser ? <GridBackground><SignUpPage /></GridBackground>:<Navigate to = "/"/>}/>
         <Route path="/transaction/:id" element ={data.authUser ?<GridBackground><TransactionPage /></GridBackground> : <Navigate to="/login"/>}/>
-        <Route path = "/chatbot" element = {data.authUser ? <Chatbot /> : <Navigate to = "/login"/>}/>
+        <Route path = "/chatbot" element = {data.authUser ? <GridBackground><Chatbot /></GridBackground> : <Navigate to = "/login"/>}/>
         <Route path="*" element ={<NotFoundPage />}/>
       </Routes>
       <Toaster/>
-      <Link to = "/chatbot">
-      <button className="fixed bottom-5 left-5 bg-blue-500 text-white py-2 px-4 rounded shadow-lg hover:bg-blue-600">
-        Chat to Assistant
-      </button>
-      </Link>
+      {showButton && (
+        <Link to="/chatbot">
+          <button className="fixed bottom-7 right-7 bg-[#F6009B] text-white py-2 px-4 rounded shadow-lg hover:bg-[#F6009B]">
+            Chat to Assistant!
+          </button>
+        </Link>
+      )}
+
     </>
   );
 }
