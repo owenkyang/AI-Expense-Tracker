@@ -5,7 +5,7 @@ If the above link does not work:
 
 Clone the repo! Then:
 
-First install the required packages:
+First install the required packages: <br/>
 `npm install -r requirements.txt`
 
 Open terminal and go into the correct directory.
